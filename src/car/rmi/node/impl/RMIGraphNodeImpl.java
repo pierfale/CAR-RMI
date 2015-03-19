@@ -9,6 +9,14 @@ import java.util.List;
 import car.rmi.node.RMINode;
 import car.rmi.trace.Trace;
 
+/**
+ * @author pierre falez, gaetan deflandre
+ * 
+ *  RMI graph node implementation.
+ *  the node network can have cycle.
+ *  When propagate a message, the node send the data to all the successor which are not in the trace.
+ *
+ */
 public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 	
 	private static final long serialVersionUID = 1966416235310050690L;
