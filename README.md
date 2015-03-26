@@ -18,6 +18,9 @@ java car.rmi.main.MainGraph nodep18
 - - - - - - - -
 http://www.jmdoudoux.fr/java/dej/chap-rmi.htm
 
+- - - - - - - -
+Voir pour security poticy
+java -classpath classDir -Djava.rmi.server.codebase=file:classDir/ -Djava.security.policy=Server.policy Server
 
 ## Introduction
 
