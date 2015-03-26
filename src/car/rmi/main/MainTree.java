@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Random;
 
 import car.rmi.node.RMINode;
 import car.rmi.node.impl.RMITreeNodeImpl;
@@ -57,11 +58,13 @@ public class MainTree {
 		
 		if(node == null)
 			return;
+		
+		Random rand = new Random();
 	
 		while (true) {
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	
-			node.propagate(input.readLine().getBytes(), new Trace());
+			node.propagate(input.readLine().getBytes(), rand.nextInt(), new Trace());
 	
 		}
 	}

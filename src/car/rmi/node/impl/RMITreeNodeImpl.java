@@ -21,7 +21,7 @@ public class RMITreeNodeImpl extends UnicastRemoteObject implements RMINode {
 	}
 
 	@Override
-	public void propagate(final byte[] data, final Trace trace) throws RemoteException {
+	public void propagate(final byte[] data, final int uid, final Trace trace) throws RemoteException {
 		
 		if(trace != null && trace.getLength() > 0) {
 			System.out.println("Message : "+new String(data));
@@ -44,7 +44,7 @@ public class RMITreeNodeImpl extends UnicastRemoteObject implements RMINode {
 			Thread t = new Thread() {
 				public void run() {
 					try {
-						node.propagate(data, trace);
+						node.propagate(data, uid, trace);
 					} catch (RemoteException e) {
 						System.err.println("Error when sending message a child");
 					}

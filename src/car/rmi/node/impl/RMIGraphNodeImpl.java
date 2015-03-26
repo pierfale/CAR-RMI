@@ -3,8 +3,12 @@ package car.rmi.node.impl;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import car.rmi.node.RMINode;
 import car.rmi.trace.Trace;
@@ -22,13 +26,54 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 	private static final long serialVersionUID = 1966416235310050690L;
 	private String name;
 	private List<RMINode> neighbours;
+	private Map<Long, List<Integer>> receiveHistory;
 	
 	public RMIGraphNodeImpl() throws RemoteException {
 		neighbours = new ArrayList<RMINode>();
+		receiveHistory = new HashMap<Long, List<Integer>>();
 	}
 
 	@Override
-	public void propagate(final byte[] data, final Trace trace) throws RemoteException {
+	public void propagate(final byte[] data, final int uid, final Trace trace) throws RemoteException {
+		long currentTimestamp = Calendar.getInstance().getTime().getTime();
+		int saveDelay = 10;
+		boolean received = false;
+		// check uid history
+		List<Long> objectRemove = new ArrayList<Long>();
+		for(Map.Entry<Long, List<Integer>> entry : receiveHistory.entrySet()) {
+			if(entry.getValue().contains(new Integer(uid))) {
+				received = true;
+			}
+			
+			if(entry.getKey().longValue()+saveDelay < currentTimestamp) {
+				objectRemove.add(entry.getKey());
+			}
+		}
+		
+		for(Long key : objectRemove) {
+			receiveHistory.remove(key);
+		}
+		
+		if(received) {
+			return;
+		}
+		
+		// add uid
+		
+
+		List<Integer> listUid = null;
+		if(receiveHistory.containsKey(new Long(currentTimestamp))) {
+			listUid = receiveHistory.get(new Long(currentTimestamp));
+		}
+		else {
+			listUid = new ArrayList<Integer>();
+			receiveHistory.put(new Long(currentTimestamp), listUid);
+		}
+		
+		listUid.add(new Integer(uid));
+		
+
+		
 		
 		if(trace != null && trace.getLength() > 0) {
 			System.out.println("Message : "+new String(data));
@@ -52,7 +97,7 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 				Thread t = new Thread() {
 					public void run() {
 						try {
-							node.propagate(data, trace);
+							node.propagate(data, uid, trace);
 						} catch (RemoteException e) {
 							System.err.println("Error when sending message a child");
 						}

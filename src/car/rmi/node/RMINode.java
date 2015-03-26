@@ -18,7 +18,7 @@ public interface RMINode extends Remote {
 	 * @param trace is the node history in which the propagation pass through
 	 * @throws RemoteException 
 	 */
-	public void propagate(byte[] data, Trace trace) throws RemoteException;
+	public void propagate(byte[] data, int uid, Trace trace) throws RemoteException;
 
 	/**
 	 * add a successor node to the current node

@@ -3,11 +3,14 @@ package car.rmi.main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.util.Random;
 
 import car.rmi.node.RMINode;
 import car.rmi.node.impl.RMIGraphNodeImpl;
@@ -29,7 +32,7 @@ public class MainGraph {
 
 		RMINode node = new RMIGraphNodeImpl();
 		node.setName(name);
-		Naming.rebind(name, node);
+		Naming.rebind("rmi://" + InetAddress.getLocalHost().getHostAddress()  + "/"+name, node);
 		
 		for(int i=1; i<args.length; i++) {
 			RMINode neighbourNode = (RMINode)Naming.lookup(args[i]);
@@ -41,15 +44,18 @@ public class MainGraph {
 	}
 
 	public static void main(String[] args) throws NotBoundException, IOException {
+			
 		RMINode node = new MainGraph().create(args);
 		
 		if(node == null)
 			return;
+		
+		Random rand = new Random();
 	
 		while (true) {
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	
-			node.propagate(input.readLine().getBytes(), new Trace());
+			node.propagate(input.readLine().getBytes(), rand.nextInt(), new Trace());
 	
 		}
 	}
