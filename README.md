@@ -32,10 +32,20 @@ Deux implémentations existent :
 * Les noeuds d'arbre (*RMINodeTreeImpl*) qui peuvent posséder soit 0 soit 1 noeud parent et N fils.
 * Les noeuds de graph (*RMINodeGraphImpl*) qui peuvent posséder N voisins.
 
+Chaque noeud est identifié par sa propriété *name*. Celui-ci nécéssite d'étre unique pour un bon fonctionement du systeme.
+
+les noeuds possede une méthode *propagate* qui permet d'envoyer un buffer à l'ensemble de ses successeurs. En plus de ce buffer deux parametre sont propagé :
+* Une trace contenant la liste des noeuds par lesquel le message est passé
+* Un identifiant unique qui permet de vérifier q'un même message soit reçu par le même noeud
+
+Try/catch :
+
+* RMITreeNodeImpl.propagate (RemoteException) : permet d'afficher les erreurs de transmition du buffer aux enfants.
+* RMIGraphNodeImpl.propagate (RemoteException) : permet d'afficher les erreurs de transmition du buffer aux successeurs.
 ## Code samples
 
 Création d'une noeud de graph
-'''
+```
 String name = args[0];
 
 RMINode node = new RMIGraphNodeImpl();
@@ -49,11 +59,10 @@ for(int i=1; i<args.length; i++) {
 	neighbourNode.addSuccessor(node);
 	node.addSuccessor(neighbourNode);
 }
-
-'''
+```
 
 Propagation d'un buffer à tous ses successeurs de façon asynchrone
-'''
+```
 for(final RMINode node : neighbours) {
 	Thread t = new Thread() {
 		public void run() {
@@ -67,10 +76,10 @@ for(final RMINode node : neighbours) {
 
 	t.run();
 }
-'''
+```
 
 Gestion de la reception redondante des messages via un identifiant
-'''
+```
 private boolean isNewMessage(int uid) {
 	long currentTimestamp = Calendar.getInstance().getTime().getTime();
 	int saveDelay = 10000; // 10 sec
@@ -110,10 +119,10 @@ private boolean isNewMessage(int uid) {
 		
 	return !received;
 }
-'''
+```
 
 Affichage du message et de la trace lors de l'appel à la méthode propagate
-'''
+```
 if(trace != null && trace.getLength() > 0) {
 	System.out.println("Message : "+new String(data));
 			
@@ -125,14 +134,14 @@ if(trace != null && trace.getLength() > 0) {
 		System.out.println("#"+cpt+" : "+current.getName());		
 	}
 }
-'''
+```
 
 Gestion de l'envoie de nouveau buffer et de la génératino de leurs identifiants
-'''
+```
 Random rand = new Random();
 	
 while (true) {
 	BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	node.propagate(input.readLine().getBytes(), rand.nextInt(), new Trace());
 }
-'''
+```
