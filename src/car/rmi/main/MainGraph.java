@@ -31,10 +31,12 @@ public class MainGraph {
 
 		RMINode node = new RMIGraphNodeImpl();
 		node.setName(name);
-		Naming.rebind("rmi://" + InetAddress.getLocalHost().getHostAddress()  + "/"+name, node);
+		System.out.println("Start "+name+" on address "+InetAddress.getLocalHost().getHostAddress());
+		
+		Naming.rebind("rmi://" + InetAddress.getLocalHost().getHostAddress()  + "/"+name, node); // rmi bind with name 
 		
 		for(int i=1; i<args.length; i++) {
-			RMINode neighbourNode = (RMINode)Naming.lookup(args[i]);
+			RMINode neighbourNode = (RMINode)Naming.lookup(args[i]); // get successor object
 			neighbourNode.addSuccessor(node);
 			node.addSuccessor(neighbourNode);
 		}
