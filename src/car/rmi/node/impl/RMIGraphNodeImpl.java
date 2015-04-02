@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import car.rmi.node.RMINode;
 import car.rmi.trace.Trace;
@@ -28,16 +30,19 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 	private List<RMINode> neighbours;
 	private Map<Long, List<Integer>> receiveHistory;
 	
+	private byte[] lastData;
+	private Trace lastTrace;
+	
 	public RMIGraphNodeImpl() throws RemoteException {
 		neighbours = new ArrayList<RMINode>();
 		receiveHistory = new HashMap<Long, List<Integer>>();
 	}
-
-	@Override
-	public void propagate(final byte[] data, final int uid, final Trace trace) throws RemoteException {
+	
+	private boolean isNewMessage(int uid) {
 		long currentTimestamp = Calendar.getInstance().getTime().getTime();
 		int saveDelay = 10;
 		boolean received = false;
+		
 		// check uid history
 		List<Long> objectRemove = new ArrayList<Long>();
 		for(Map.Entry<Long, List<Integer>> entry : receiveHistory.entrySet()) {
@@ -50,29 +55,34 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 			}
 		}
 		
+		// remove oldest id
 		for(Long key : objectRemove) {
 			receiveHistory.remove(key);
 		}
 		
-		if(received) {
+		if(!received) {
+		
+			// add new uid
+			List<Integer> listUid = null;
+			if(receiveHistory.containsKey(new Long(currentTimestamp))) {
+				listUid = receiveHistory.get(new Long(currentTimestamp));
+			}
+			else {
+				listUid = new ArrayList<Integer>();
+				receiveHistory.put(new Long(currentTimestamp), listUid);
+			}
+			
+			listUid.add(new Integer(uid));
+		}
+		
+		return received;
+	}
+
+	@Override
+	public void propagate(final byte[] data, final int uid, final Trace trace) throws RemoteException {
+
+		if(!isNewMessage(uid)) // message already received
 			return;
-		}
-		
-		// add uid
-		
-
-		List<Integer> listUid = null;
-		if(receiveHistory.containsKey(new Long(currentTimestamp))) {
-			listUid = receiveHistory.get(new Long(currentTimestamp));
-		}
-		else {
-			listUid = new ArrayList<Integer>();
-			receiveHistory.put(new Long(currentTimestamp), listUid);
-		}
-		
-		listUid.add(new Integer(uid));
-		
-
 		
 		
 		if(trace != null && trace.getLength() > 0) {
@@ -90,6 +100,9 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 		
 		if(trace != null)
 			trace.addTrace(this);
+		
+		lastData = data;
+		lastTrace = trace;
 		
 		
 		for(final RMINode node : neighbours) {
@@ -123,6 +136,16 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 	@Override
 	public String getName() throws RemoteException {
 		return this.name;
+	}
+
+	@Override
+	public byte[] getLastData() throws RemoteException {
+		return lastData;
+	}
+
+	@Override
+	public Trace getLastTrace() throws RemoteException {
+		return lastTrace;
 	}
 	
 }

@@ -16,15 +16,19 @@ terminals_pid=""
 
 $TERMINAL -e "java -classpath bin/ car.rmi.main.MainTree node1"&
 terminals_pid="$terminals_pid $!"
+sleep $DELAY
 
 $TERMINAL -e "java -classpath bin/ car.rmi.main.MainTree node2 node1"&
 terminals_pid="$terminals_pid $!"
+sleep $DELAY
 
 $TERMINAL -e "java -classpath bin/ car.rmi.main.MainTree node3 node1"&
 terminals_pid="$terminals_pid $!"
+sleep $DELAY
 
 $TERMINAL -e "java -classpath bin/ car.rmi.main.MainTree node4 node2"&
 terminals_pid="$terminals_pid $!"
+sleep $DELAY
 
 $TERMINAL -e "java -classpath bin/ car.rmi.main.MainTree node5 node2"&
 terminals_pid="$terminals_pid $!"

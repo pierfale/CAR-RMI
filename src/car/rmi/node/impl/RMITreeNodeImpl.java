@@ -16,6 +16,9 @@ public class RMITreeNodeImpl extends UnicastRemoteObject implements RMINode {
 	private String name;
 	private List<RMINode> childs;
 	
+	private byte[] lastData;
+	private Trace lastTrace;
+	
 	public RMITreeNodeImpl() throws RemoteException {
 		childs = new ArrayList<RMINode>();
 	}
@@ -38,6 +41,9 @@ public class RMITreeNodeImpl extends UnicastRemoteObject implements RMINode {
 		
 		if(trace != null)
 			trace.addTrace(this);
+		
+		lastData = data;
+		lastTrace = trace;
 		
 		
 		for(final RMINode node : childs) {
@@ -69,6 +75,16 @@ public class RMITreeNodeImpl extends UnicastRemoteObject implements RMINode {
 	@Override
 	public String getName() throws RemoteException {
 		return this.name;
+	}
+
+	@Override
+	public byte[] getLastData() throws RemoteException {
+		return lastData;
+	}
+
+	@Override
+	public Trace getLastTrace() throws RemoteException {
+		return lastTrace;
 	}
 
 }

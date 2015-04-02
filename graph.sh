@@ -32,7 +32,6 @@ sleep $DELAY
 
 $TERMINAL -e "java -classpath bin/ car.rmi.main.MainGraph node5 node4"&
 terminals_pid="$terminals_pid $!"
-sleep $DELAY
 
 #Wait end
 echo -n "Press any key to continue... "
