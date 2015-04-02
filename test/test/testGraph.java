@@ -1,5 +1,10 @@
 package test;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -7,26 +12,24 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Iterator;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import car.rmi.node.RMINode;
+import car.rmi.node.impl.RMIGraphNodeImpl;
 import car.rmi.node.impl.RMITreeNodeImpl;
 import car.rmi.trace.Trace;
-import static org.junit.Assert.*;
 
-public class TreeTest {
-	
+public class testGraph {
 	private String node1Name;
 	private RMINode node1;
 	private String node2Name;
 	private RMINode node2;
-	private String node3_1Name;
-	private RMINode node3_1;
-	private String node3_2Name;
-	private RMINode node3_2;
+	private String node3Name;
+	private RMINode node3;
+	private String node4Name;
+	private RMINode node4;
 	
 	@BeforeClass
 	public static void classInitialize() {
@@ -39,39 +42,39 @@ public class TreeTest {
 	
 	@Before
 	public void initialize() {
-		//Create Tree
+		//Create  graph
 		
-		//      node1
-		// 	      |
-		//      node2
-		//	    |   |
-		// node3_1 node3_1
-		
+		//     node1
+		// 	   |   |
+		// node2   node3
+		//	   |   |
+		//     node4
 		try {
 			
 			node1Name = "node1";
-			node1 = new RMITreeNodeImpl();
+			node1 = new RMIGraphNodeImpl();
 			node1.setName(node1Name);
 			Naming.rebind(node1Name, node1);
 			
 			
 			node2Name = "node2";
-			node2 = new RMITreeNodeImpl();
+			node2 = new RMIGraphNodeImpl();
 			node2.setName(node2Name);
 			Naming.rebind(node2Name, node2);
 			((RMINode)Naming.lookup(node1Name)).addSuccessor(node2);
 			
-			node3_1Name = "node3_1";
-			node3_1 = new RMITreeNodeImpl();
-			node3_1.setName(node3_1Name);
-			Naming.rebind(node3_1Name, node3_1);
-			((RMINode)Naming.lookup(node2Name)).addSuccessor(node3_1);
+			node3Name = "node3";
+			node3 = new RMIGraphNodeImpl();
+			node3.setName(node3Name);
+			Naming.rebind(node3Name, node3);
+			((RMINode)Naming.lookup(node1Name)).addSuccessor(node3);
 			
-			node3_2Name = "node3_2";
-			node3_2 = new RMITreeNodeImpl();
-			node3_2.setName(node3_2Name);
-			Naming.rebind(node3_2Name, node3_2);
-			((RMINode)Naming.lookup(node2Name)).addSuccessor(node3_2);
+			node4Name = "node4";
+			node4 = new RMIGraphNodeImpl();
+			node4.setName(node4Name);
+			Naming.rebind(node4Name, node4);
+			((RMINode)Naming.lookup(node2Name)).addSuccessor(node4);
+			((RMINode)Naming.lookup(node3Name)).addSuccessor(node4);
 			
 			Thread.sleep(100);
 		} catch (RemoteException e) {
@@ -85,7 +88,7 @@ public class TreeTest {
 		}
 	}
 	
-		@Test
+	@Test
 	public void correctPropagate() throws RemoteException, InterruptedException {
 		byte[] data = {'t', 'e', 's', 't'};
 		
@@ -95,38 +98,43 @@ public class TreeTest {
 		Thread.sleep(100);
 		
 		assertArrayEquals(data, node1.getLastData());
-		Iterator<RMINode> it1 = node1.getLastTrace().getIterator();
-		
-		assertEquals(node1.getName(), it1.next().getName());
-		assertFalse(it1.hasNext());
 		
 		assertArrayEquals(data, node2.getLastData());
-		Iterator<RMINode> it2 = node2.getLastTrace().getIterator();
-		assertEquals(node1.getName(), it2.next().getName());
-		assertEquals(node2.getName(), it2.next().getName());
-		assertFalse(it2.hasNext());
 		
-		assertArrayEquals(data, node3_1.getLastData());
-		Iterator<RMINode> it3_1 = node3_1.getLastTrace().getIterator();
-		assertEquals(node1.getName(), it3_1.next().getName());
-		assertEquals(node2.getName(), it3_1.next().getName());
-		assertEquals(node3_1.getName(), it3_1.next().getName());
-		assertFalse(it3_1.hasNext());
+		assertArrayEquals(data, node3.getLastData());
 		
-		assertArrayEquals(data, node3_2.getLastData());
-		Iterator<RMINode> it3_2 = node3_2.getLastTrace().getIterator();
-		assertEquals(node1.getName(), it3_2.next().getName());
-		assertEquals(node2.getName(), it3_2.next().getName());
-		assertEquals(node3_2.getName(), it3_2.next().getName());
-		assertFalse(it3_2.hasNext());
+		assertArrayEquals(data, node4.getLastData());
+	}
+	
+	@Test
+	public void uniquePropagate() throws RemoteException, InterruptedException {
+		byte[] data1 = {'t', 'e', 's', 't', '1'};
+		byte[] data2 = {'t', 'e', 's', 't', '2'};
+		
+		int uid = 42;
+		
+		node1.propagate(data1, uid, new Trace());
+		
+		Thread.sleep(100);
+		
+		node1.propagate(data2, uid, new Trace());
+		
+		Thread.sleep(100);
+		
+		assertArrayEquals(data1, node1.getLastData());
+		
+		assertArrayEquals(data1, node2.getLastData());
+		
+		assertArrayEquals(data1, node3.getLastData());
+		
+		assertArrayEquals(data1, node4.getLastData());
 	}
 	
 	@Test
 	public void correctName() throws RemoteException, MalformedURLException, NotBoundException {
 		assertEquals(node1Name, ((RMINode)Naming.lookup(node1Name)).getName());
 		assertEquals(node2Name, ((RMINode)Naming.lookup(node2Name)).getName());
-		assertEquals(node3_1Name, ((RMINode)Naming.lookup(node3_1Name)).getName());
-		assertEquals(node3_2Name, ((RMINode)Naming.lookup(node3_2Name)).getName());
+		assertEquals(node3Name, ((RMINode)Naming.lookup(node3Name)).getName());
+		assertEquals(node4Name, ((RMINode)Naming.lookup(node4Name)).getName());
 	}
-
 }

@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import car.rmi.node.RMINode;
 import car.rmi.trace.Trace;
@@ -39,7 +37,7 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 	
 	private boolean isNewMessage(int uid) {
 		long currentTimestamp = Calendar.getInstance().getTime().getTime();
-		int saveDelay = 10;
+		int saveDelay = 10000; // 10 sec
 		boolean received = false;
 		
 		// check uid history
@@ -74,15 +72,14 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 			listUid.add(new Integer(uid));
 		}
 		
-		return received;
+		return !received;
 	}
 
 	@Override
 	public void propagate(final byte[] data, final int uid, final Trace trace) throws RemoteException {
-
+		
 		if(!isNewMessage(uid)) // message already received
 			return;
-		
 		
 		if(trace != null && trace.getLength() > 0) {
 			System.out.println("Message : "+new String(data));
@@ -103,27 +100,24 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 		lastData = data;
 		lastTrace = trace;
 		
-		
 		for(final RMINode node : neighbours) {
-			if(trace == null || !trace.contains(node)) {
-				Thread t = new Thread() {
-					public void run() {
-						try {
-							node.propagate(data, uid, trace);
-						} catch (RemoteException e) {
-							System.err.println("Error when sending message a child");
-						}
+			Thread t = new Thread() {
+				public void run() {
+					try {
+						node.propagate(data, uid, trace);
+					} catch (RemoteException e) {
+						System.err.println("Error when sending message a child");
 					}
-				};
-				
-				t.run();
-			}
+				}
+			};
+
+			t.run();
 		}
 	}
 
 	@Override
 	public void addSuccessor(RMINode sucessor) throws RemoteException {
-		System.out.println("New child added : "+sucessor.getName());
+		System.out.println("["+this.name+"] New child added : "+sucessor.getName());
 		this.neighbours.add(sucessor);
 	}
 
