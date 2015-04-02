@@ -5,10 +5,10 @@ import java.rmi.*;
 import car.rmi.trace.Trace;
 
 /**
- * @author pierre falez, gaetan deflandre
  * RMI interface for a node
  * A node own an unique identifier name and can propagate data
  * 
+ * @author pierre falez, gaetan deflandre
  */
 public interface RMINode extends Remote {
 	
