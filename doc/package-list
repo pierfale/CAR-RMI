@@ -2,4 +2,3 @@ car.rmi.main
 car.rmi.node
 car.rmi.node.impl
 car.rmi.trace
-test
