@@ -1,4 +1,4 @@
 /**
- * Contain RMI interface for node
+ * Contains RMI interface for node
  */
 package car.rmi.node;
