@@ -5,32 +5,47 @@ Gaëtan DEFLANDRE
 02/04/2015  
 - - - - - - - - - - - 
 
+
 ## Introduction
 
-Transfert de données décentralisé utilisant l'API RMI en JAVA. Les données transitent entre différents noeuds possiblement
-sur des machines distinctes.
+Transfert de données décentralisé utilisant l'API RMI en JAVA. Les
+données transitent entre différents noeuds possiblement sur des
+machines distinctes.
+
 
 ## Architecture
 
-L'architecture est composé d'une seul interface RMI, *RMINode*, pour représenter tout les types de noeuds (Arbre ou Graph).
+L'architecture est composée d'une seule interface RMI, *RMINode*, pour
+représenter tous les types de noeuds (Arbre ou Graph).
 
 Deux implémentations existent :
-* Les noeuds d'arbre (*RMINodeTreeImpl*) qui peuvent posséder soit 0 soit 1 noeud parent et N fils.
-* Les noeuds de graph (*RMINodeGraphImpl*) qui peuvent posséder N voisins.
+* Les noeuds d'arbre (*RMINodeTreeImpl*) qui peuvent posséder soit 0
+  soit 1 noeud parent et N fils.
+* Les noeuds de graph (*RMINodeGraphImpl*) qui peuvent posséder N
+  voisins.
 
-Chaque noeud est identifié par sa propriété *name*. Celui-ci nécéssite d'étre unique pour un bon fonctionement du systeme.
+Chaque noeud est identifié par sa propriété *name*. Celui-ci nécessite
+d'être unique pour un bon fonctionnement du système.
 
-les noeuds possede une méthode *propagate* qui permet d'envoyer un buffer à l'ensemble de ses successeurs. En plus de ce buffer deux parametre sont propagé :
-* Une trace contenant la liste des noeuds par lesquel le message est passé
-* Un identifiant unique qui permet de vérifier q'un même message soit reçu par le même noeud
+Les noeuds possèdent une méthode *propagate* qui permet d'envoyer un
+buffer à l'ensemble de ses successeurs. En plus de ce buffer deux
+paramètres sont propagés :
+* Une trace contenant la liste des noeuds par lesquels le message est
+  passé.
+* Un identifiant unique qui permet de vérifier qu'un même message soit
+  reçu par le même noeud.
 
-Try/catch :
+### Try/catch :
 
-* RMITreeNodeImpl.propagate (RemoteException) : permet d'afficher les erreurs de transmition du buffer aux enfants.
-* RMIGraphNodeImpl.propagate (RemoteException) : permet d'afficher les erreurs de transmition du buffer aux successeurs.
+* RMITreeNodeImpl.propagate (RemoteException) : permet d'afficher les
+  erreurs de transmission du buffer aux enfants.
+* RMIGraphNodeImpl.propagate (RemoteException) : permet d'afficher les
+  erreurs de transmission du buffer aux successeurs.
+
+
 ## Code samples
 
-Création d'une noeud de graph
+Création d'un noeud de graph
 ```
 String name = args[0];
 
@@ -64,7 +79,7 @@ for(final RMINode node : neighbours) {
 }
 ```
 
-Gestion de la reception redondante des messages via un identifiant
+Gestion de la réception redondante des messages via un identifiant
 ```
 private boolean isNewMessage(int uid) {
 	long currentTimestamp = Calendar.getInstance().getTime().getTime();
@@ -122,7 +137,7 @@ if(trace != null && trace.getLength() > 0) {
 }
 ```
 
-Gestion de l'envoie de nouveau buffer et de la génératino de leurs identifiants
+Gestion de l'envoie de nouveau buffer et de la génération de leurs identifiants
 ```
 Random rand = new Random();
 	
