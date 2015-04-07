@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.Random;
 
@@ -20,6 +19,15 @@ public class MainGraph {
 
 	public static final String usage = "command <node-name> [<neighbour-name]*";
 
+	/**
+	 * Create a new graph node by parsing command line
+	 * @param args of command line
+	 * @return a register RMI node
+	 * @throws RemoteException
+	 * @throws MalformedURLException
+	 * @throws NotBoundException
+	 * @throws UnknownHostException
+	 */
 	public RMINode create(String args[]) throws RemoteException, MalformedURLException, NotBoundException, UnknownHostException {
 
 		if(args.length == 0) {

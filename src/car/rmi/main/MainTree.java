@@ -18,6 +18,15 @@ public class MainTree {
 
 	public static final String usage = "command <node-name> [<parent-name>]";
 
+	/**
+	 * Parse line command for create new RMI tree node
+	 * @param args of line command
+	 * @return
+	 * @throws RemoteException
+	 * @throws MalformedURLException
+	 * @throws NotBoundException
+	 * @throws UnknownHostException
+	 */
 	public RMINode create(String args[]) throws RemoteException, MalformedURLException, NotBoundException, UnknownHostException {
 
 		String parent = "";
