@@ -137,7 +137,7 @@ if(trace != null && trace.getLength() > 0) {
 }
 ```
 
-Gestion de l'envoie de nouveau buffer et de la génération de leurs identifiants
+Gestion de l'envoi de nouveau buffer et de la génération de leurs identifiants
 ```
 Random rand = new Random();
 	
