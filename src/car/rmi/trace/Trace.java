@@ -18,18 +18,40 @@ public class Trace implements Serializable {
 		traceList = new ArrayList<RMINode>();
 	}
 	
+	/**
+	 * Add a node into trace history
+	 * @param node
+	 * @throws RemoteException
+	 */
 	public void addTrace(RMINode node) throws RemoteException {
 		traceList.add(node);
 	}
 	
+	/**
+	 * Get an iterator over trace, begin with the oldest node
+	 * @return
+	 * @throws RemoteException
+	 */
 	public Iterator<RMINode> getIterator() throws RemoteException {
 		return traceList.iterator();
 	}
 
+	/**
+	 * Get the number of node in this trace
+	 * @return
+	 * @throws RemoteException
+	 */
 	public int getLength()  throws RemoteException {
 		return traceList.size();
 	}
-
+	
+	
+	/**
+	 * Return true if the node already exist in this trace, false otherwise
+	 * @param node
+	 * @return
+	 * @throws RemoteException
+	 */
 	public boolean contains(RMINode node) throws RemoteException {
 		for(RMINode n : traceList) {
 			if(node.getName().equals(n.getName())) 

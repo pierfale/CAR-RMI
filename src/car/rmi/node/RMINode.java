@@ -13,8 +13,10 @@ import car.rmi.trace.Trace;
 public interface RMINode extends Remote {
 	
 	/**
-	 * this methods propagate data to its successors. If trace parameter is not null, he add itself into it before transmit it to its sucessors.
+	 * this methods propagate data to its successors. If trace parameter is not null, he add itself into it before transmit it to its successors.
+	 * the uid parameter is used to recognize the message. this can be usefull is cycles are present in the network
 	 * @param data is an array of byte which contains the data to transfer
+	 * @param uid is an unique identifier for the message
 	 * @param trace is the node history in which the propagation pass through
 	 * @throws RemoteException 
 	 */

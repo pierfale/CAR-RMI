@@ -16,8 +16,7 @@ import car.rmi.trace.Trace;
  * @author pierre falez, gaetan deflandre
  * 
  *  RMI graph node implementation.
- *  the node network can have cycle.
- *  When propagate a message, the node send the data to all the successor which are not in the trace.
+ *  the node network can have cycles.
  *
  */
 public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
@@ -75,6 +74,13 @@ public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 		return !received;
 	}
 
+	/**
+	 * Redefine propagate method for a graph node.
+	 * Each message uid is checked for avoid receiving servals times the same messages
+	 * @param data is a byte array containing the content of the message
+	 * @param uid is an unique identifier of this message
+	 * @param trace is the history of last node visited by this message
+	 */
 	@Override
 	public void propagate(final byte[] data, final int uid, final Trace trace) throws RemoteException {
 		
