@@ -35,7 +35,7 @@ paramètres sont propagés :
 * Un identifiant unique qui permet de vérifier qu'un même message soit
   reçu par le même noeud.
 
-### Try/catch :
+#### Try/catch :
 
 * RMITreeNodeImpl.propagate (RemoteException) : permet d'afficher les
   erreurs de transmission du buffer aux enfants.
