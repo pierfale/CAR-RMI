@@ -19,9 +19,13 @@ public class MainTree {
 	public static final String usage = "command <node-name> [<parent-name>]";
 
 	/**
-	 * Parse line command for create new RMI tree node
-	 * @param args of line command
-	 * @return
+	 * Create a new RMI node, use for the tree, by parsing a command line. 
+	 * This method binds the RMI node in relation to the argument name, and add 
+	 * itself to its parent using RMI.
+	 * The created links are oriented from the parent to the children.
+	 * 
+	 * @param args The arguments of command line
+	 * @return a register RMI node
 	 * @throws RemoteException
 	 * @throws MalformedURLException
 	 * @throws NotBoundException
