@@ -20,8 +20,12 @@ public class MainGraph {
 	public static final String usage = "command <node-name> [<neighbour-name]*";
 
 	/**
-	 * Create a new graph node by parsing command line. b
-	 * @param args of command line
+	 * Create a new RMI node, use for the graph, by parsing a command line. 
+	 * This method binds the RMI node in relation to the argument name, and link 
+	 * itself with its neighbors using RMI.
+	 * The created links are non-oriented.
+	 * 
+	 * @param args The arguments of command line
 	 * @return a register RMI node
 	 * @throws RemoteException
 	 * @throws MalformedURLException
