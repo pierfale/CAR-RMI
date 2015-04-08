@@ -146,3 +146,11 @@ while (true) {
 	node.propagate(input.readLine().getBytes(), rand.nextInt(), new Trace());
 }
 ```
+
+# Utilisation
+
+Deux Jar executable sont présent : 
+* GraphNode.jar <node-name> [<neighbour-name]* : Crée un noeud de graph
+* TreeNode.jar <node-name> [<parent-name>] : Crée un noeud de d'arbre
+
+Il est nécéssaire de lancer rmiregistry. Il est également nécéssaire de définir la variable d'environement CLASSPATH avec le chemin vers le jar à executer.
