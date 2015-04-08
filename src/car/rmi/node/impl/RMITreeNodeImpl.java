@@ -23,6 +23,14 @@ public class RMITreeNodeImpl extends UnicastRemoteObject implements RMINode {
 		childs = new ArrayList<RMINode>();
 	}
 
+	/**
+	 * Redefine propagate method for a tree node.
+	 * In this implementation (tree) the uid is ignored.
+	 * 
+	 * @param data is a byte array containing the content of the message
+	 * @param uid is an unique identifier of this message
+	 * @param trace is the history of last node visited by this message
+	 */
 	@Override
 	public void propagate(final byte[] data, final int uid, final Trace trace) throws RemoteException {
 		
