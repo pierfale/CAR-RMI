@@ -5,8 +5,13 @@ import java.rmi.*;
 import car.rmi.trace.Trace;
 
 /**
+<<<<<<< HEAD
  * RMI interface for a node A node own an unique identifier name and can
  * propagate data
+=======
+ * RMI interface for a node
+ * A node own an unique identifier name and can propagate data to its successor
+>>>>>>> 2eca5572228671beb308fe504de03365c1204933
  * 
  * @author pierre falez, gaetan deflandre
  */
@@ -47,7 +52,7 @@ public interface RMINode extends Remote {
 
 	/**
 	 * @return name of the node
-	 * @throws RemoteException
+	 * @throws RemoteException is throw when issue occurs with RMI
 	 */
 	public String getName() throws RemoteException;
 
@@ -55,7 +60,7 @@ public interface RMINode extends Remote {
 	 * Return the last received buffer with method propagate or null otherwise
 	 * 
 	 * @return data buffer
-	 * @throws RemoteException
+	 * @throws RemoteException is throw when issue occurs with RMI
 	 */
 	public byte[] getLastData() throws RemoteException;
 
@@ -63,7 +68,7 @@ public interface RMINode extends Remote {
 	 * Return the last received trace with method propagate or null otherwise
 	 * 
 	 * @return trace
-	 * @throws RemoteException
+	 * @throws RemoteException is throw when issue occurs with RMI
 	 */
 	public Trace getLastTrace() throws RemoteException;
 }

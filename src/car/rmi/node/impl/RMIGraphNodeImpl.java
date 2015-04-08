@@ -22,6 +22,7 @@ import car.rmi.trace.Trace;
 public class RMIGraphNodeImpl extends UnicastRemoteObject implements RMINode {
 	
 	private static final long serialVersionUID = 1966416235310050690L;
+	
 	private String name;
 	private List<RMINode> neighbours;
 	private Map<Long, List<Integer>> receiveHistory;
