@@ -20,7 +20,7 @@ public class MainGraph {
 	public static final String usage = "command <node-name> [<neighbour-name]*";
 
 	/**
-	 * Create a new graph node by parsing command line. b
+	 * Create a new graph node by parsing command line. bind this node name
 	 * @param args of command line
 	 * @return a register RMI node
 	 * @throws RemoteException
